@@ -1,0 +1,116 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  Book:
+    description: Book defines the structure for an API book
+    properties:
+      author:
+        type: string
+        x-go-name: Author
+      isbn:
+        type: string
+        x-go-name: Isbn
+      price:
+        format: float
+        type: number
+        x-go-name: Price
+      title:
+        type: string
+        x-go-name: Title
+    type: object
+    x-go-package: github.com/janPhil/bookstore/internal/values
+  GenericError:
+    description: GenericError is a generic error message returned by a server
+    properties:
+      message:
+        type: string
+        x-go-name: Message
+    type: object
+    x-go-package: github.com/janPhil/bookstore/internal/handlers
+info:
+  description: Documentation for Bookstore
+  title: of Bookstore
+  version: 1.0.0
+paths:
+  /book:
+    post:
+      description: Create a new book
+      operationId: AddBook
+      responses:
+        "200":
+          $ref: '#/responses/bookResponse'
+        "501":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - book
+  /books:
+    get:
+      description: Return a list of books from the database
+      operationId: AllBooks
+      responses:
+        "200":
+          $ref: '#/responses/booksResponse'
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      description: Delete a book by a given ID
+      operationId: DeleteBook
+      parameters:
+      - description: The id of the book for which the operation relates
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "201":
+          $ref: '#/responses/noContentResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "501":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - books
+    get:
+      description: Returns a single book from the database
+      operationId: Book
+      parameters:
+      - description: The id of the book for which the operation relates
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          $ref: '#/responses/bookResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - books
+produces:
+- application/json
+responses:
+  bookResponse:
+    description: Data structure representing a single book
+    schema:
+      $ref: '#/definitions/Book'
+  booksResponse:
+    description: List of books
+    schema:
+      items:
+        $ref: '#/definitions/Book'
+      type: array
+  errorResponse:
+    description: Generic error message returned as a string
+    schema:
+      $ref: '#/definitions/GenericError'
+  noContentResponse:
+    description: No content is returned by this API endpoint
+schemes:
+- http
+swagger: "2.0"
